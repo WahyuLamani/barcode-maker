@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+     <meta charset="UTF-8">
+     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <title>Barcode Maker</title>
+     <!-- Library at : https://github.com/lindell/JsBarcode -->
+</head>
+<script src="JsBarcode.all.min.js"></script>
+     <style>
+          body {
+               margin: 0;
+               padding: 0;
+               font-family: Arial, Helvetica, sans-serif;
+          }
+          .container {
+               border: 1px solid #000;
+               position: fixed;
+               top: 0;
+               left: 50%;
+               transform: translateX(-50%);
+               text-align: center;
+               width: 59mm;
+               height: 32mm;
+          }
+          .content{
+               width: 100%;
+               height: 100%;
+          }
+          .tag-input{
+               position: absolute;
+               top: 50%; /* Menyusun dari bagian atas */
+               left: 50%; /* Menyusun dari bagian kiri */
+               transform: translate(-50%, -50%); /* Menggeser kontainer ke tengah */
+               text-align: center; /* Mengatur teks ke tengah */
+               width: 500px;
+          }
+          .border {
+               border: 1px solid #000;
+          }
+          .button {
+               background-color: #FF2121;
+               padding: 6px 12px;
+               margin: 20px;
+               font-size: 15px;
+               cursor: pointer;
+               border: none;
+               border-radius: 5px;
+          }
+          .button:hover {
+               box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+               background-color: black;
+               color: white;
+          }
+          input{
+               width: 100%;
+               height: 2em;
+               border: 1px, #211;
+          }
+          @media print {
+               body {
+                    width: 100%; /* Lebar konten mencakup seluruh halaman */
+                    margin: 0; /* Margin diatur ke 0 */
+                    /* Menghilangkan title browser di bagian atas hasil cetakan */
+               }
+               head { display: none; }
+          
+               /* Menghilangkan tanggal dan waktu di bagian atas hasil cetakan */
+               .date-time { display: none; }
+
+               /* Menghilangkan nomor halaman di bawah hasil cetakan */
+               .page-number { display: none; }
+
+           }
+     </style>
+<body>
+     <div id="print">
+          <div class="border" style="
+          position: fixed;
+          top: 0;
+          left: 50%;
+          transform: translateX(-50%);
+          text-align: center;
+          width: 59mm;
+          height: 32mm;">
+          <div style="width: 100%;
+          height: 100%;font-family: Arial, Helvetica, sans-serif;">
+               <h6 style="margin-top: 4px;
+               margin-bottom: 0;
+               padding: 0;" id="name"></h6>
+               <svg id="barcode"></svg> 
+          </div>
+     </div>
+     </div>
+     
+     <div class="tag-input">
+          <input type="text" id="realtime-input" placeholder="Paste disini..">
+          <button class="button" type="button"id="printButton">Print</button>
+     </div>
+<script>
+     //FO-23100001TA/Ny ELSJE MAAR IGIR
+     const inputElement = document.getElementById("realtime-input");
+     const name = document.getElementById('name');
+     let array = [];
+     inputElement.addEventListener("input", function() {
+          let inputValue = inputElement.value;
+          //([A-Za-z]+( [A-Za-z]+)+) ([A-Za-z0-9]+(-[A-Za-z0-9]+)+) ([A-Za-z0-9]+(-[A-Za-z0-9]+)+) 
+          // string copy dari excel : /([A-Za-z]+(\s+[A-Za-z]+)+)\t([0-9]+(-[0-9]+)+)\t([A-Za-z0-9]+(-[A-Za-z0-9]+)+)\t/
+          //karakter nama tidak bisa menggunakan simbol : /([A-Za-z]+( [A-Za-z]+)+) ([0-9]+(-[0-9]+)+) ([A-Za-z0-9]+(-[A-Za-z0-9]+)+)/; 
+          const rgx = /([A-Za-z]+(\s+[A-Za-z]+)+)\t([0-9]+(-[0-9]+)+)\t([A-Za-z0-9]+(-[A-Za-z0-9]+)+)\t/;
+          array = inputValue.split(rgx);
+          // console.log(array);
+          // for (let i = 1; i < array.length; i++) {
+               
+          //      const el = array[i];
+          //      console.log(array[i]);
+          // }
+          JsBarcode("#barcode", array[5],{
+               width: 1,height: 35,fontSize: 14
+          })
+          name.textContent = array[1];
+        });
+
+
+     // Fungsi untuk memulai pencetakan
+     function printPage() {
+          //regex : ([A-Za-z]+( [A-Za-z]+)+) ([A-Za-z0-9]+(-[A-Za-z0-9]+)+) ([A-Za-z0-9]+(-[A-Za-z0-9]+)+)
+          // Membuat objek Print
+          var printWindow = window.open('', '_blank');
+          // Mengatur ukuran kertas (A4 adalah contoh)
+          printWindow.document.body.style.width = '59mm';
+          printWindow.document.body.style.height = '32mm';
+          printWindow.document.write(document.getElementById('print').innerHTML);
+          // Mengirim perintah cetak ke printer
+          printWindow.print();
+          // Menutup jendela cetakan setelah selesai
+          printWindow.close();
+     }
+
+     // Contoh tombol untuk memulai pencetakan
+     var printButton = document.getElementById('printButton');
+     printButton.addEventListener('click', function() {
+     printPage();
+     });
+</script>
+</body>
+
+
+</html>
