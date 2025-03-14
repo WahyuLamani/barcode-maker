@@ -1,229 +1,281 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-     <meta charset="UTF-8">
-     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-     <title>Barcode Maker</title>
-     <!-- Library at : https://github.com/lindell/JsBarcode -->
-</head>
-<!-- <script src="JsBarcode.all.min.js"></script> -->
-<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.0/dist/JsBarcode.all.min.js"></script>
-     <style>
-          body {
-               margin: 0;
-               padding: 0;
-               font-family: Arial, Helvetica, sans-serif;
-          }
-          .container {
-               border: 1px solid #000;
-               position: fixed;
-               top: 0;
-               left: 50%;
-               transform: translateX(-50%);
-               text-align: center;
-               width: 59mm;
-               height: 32mm;
-          }
-          .content{
-               width: 100%;
-               height: 100%;
-          }
-          .tag-input{
-               position: absolute;
-               top: 50%; /* Menyusun dari bagian atas */
-               left: 50%; /* Menyusun dari bagian kiri */
-               transform: translate(-50%, -50%); /* Menggeser kontainer ke tengah */
-               text-align: center; /* Mengatur teks ke tengah */
-               width: 500px;
-          }
-          input{
-               margin-top: 12px;
-          }
-          .border {
-               border: 1px solid #000;
-          }
-          .button {
-               background-color: #FF2121;
-               padding: 6px 12px;
-               margin: 20px;
-               font-size: 15px;
-               cursor: pointer;
-               border: none;
-               border-radius: 5px;
-          }
-          .info {
-               background-color: #225af3;
-          }
-          .dicoret {
-               text-decoration: line-through;
-          }
-          .button:hover {
-               box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
-               background-color: black;
-               color: white;
-          }
-          input{
-               width: 100%;
-               height: 2em;
-               border: 1px, #211;
-          }
-          table, td, th {
-               border: 1px solid black;
-          }
-          table {
-               width: 100%;
-               border-collapse: collapse;
-               font-size: 12px;
-          }
-          th, td {
-          height: 10px;
-          }
-          @media print {
-               body {
-                    width: 100%; /* Lebar konten mencakup seluruh halaman */
-                    margin: 0; /* Margin diatur ke 0 */
-                    /* Menghilangkan title browser di bagian atas hasil cetakan */
-               }
-               head { display: none; }
-          
-               /* Menghilangkan tanggal dan waktu di bagian atas hasil cetakan */
-               .date-time { display: none; }
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Barcode Maker</title>
+    <!-- Library at : https://github.com/lindell/JsBarcode -->
+  </head>
+  <!-- <script src="JsBarcode.all.min.js"></script> -->
+  <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.0/dist/JsBarcode.all.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+    .container {
+      border: 1px solid #000;
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+      width: 59mm;
+      height: 32mm;
+    }
+    .content {
+      width: 100%;
+      height: 100%;
+    }
+    .tag-input {
+      position: absolute;
+      top: 50%; /* Menyusun dari bagian atas */
+      left: 50%; /* Menyusun dari bagian kiri */
+      transform: translate(-50%, -50%); /* Menggeser kontainer ke tengah */
+      text-align: center; /* Mengatur teks ke tengah */
+      width: 500px;
+    }
+    input {
+      margin-top: 12px;
+    }
+    .border {
+      border: 1px solid #000;
+    }
+    .button {
+      background-color: #ff2121;
+      padding: 6px 12px;
+      margin: 20px;
+      font-size: 15px;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+    }
+    .info {
+      background-color: #225af3;
+    }
+    .dicoret {
+      text-decoration: line-through;
+    }
+    .button:hover {
+      box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24),
+        0 17px 50px 0 rgba(0, 0, 0, 0.19);
+      background-color: black;
+      color: white;
+    }
+    input {
+      width: 100%;
+      height: 2em;
+      border: 1px, #211;
+    }
+    table,
+    td,
+    th {
+      border: 1px solid black;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+    th,
+    td {
+      height: 10px;
+    }
+    @media print {
+      body {
+        width: 100%; /* Lebar konten mencakup seluruh halaman */
+        margin: 0; /* Margin diatur ke 0 */
+        /* Menghilangkan title browser di bagian atas hasil cetakan */
+      }
+      head {
+        display: none;
+      }
 
-               /* Menghilangkan nomor halaman di bawah hasil cetakan */
-               .page-number { display: none; }
+      /* Menghilangkan tanggal dan waktu di bagian atas hasil cetakan */
+      .date-time {
+        display: none;
+      }
 
-           }
-     </style>
-<body>
-     <div id="print">
-          <div class="border" style="
-               position: fixed;
-               top: 0;
-               left: 50%;
-               transform: translateX(-50%);
-               text-align: center;
-               width: 59mm;
-               height: 32mm;">
-               <div style="width: 100%;height: 100%;font-family: Arial, Helvetica, sans-serif;">
-                         <h6 style="margin-top: 4px;margin-bottom: 0; padding: 0;" id="name"></h6>
-                         <svg id="barcode"></svg> 
-               </div>
-          </div>
-     </div>    
+      /* Menghilangkan nomor halaman di bawah hasil cetakan */
+      .page-number {
+        display: none;
+      }
+    }
+  </style>
+  <body>
+    <section
+      style="
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px;
+      "
+    >
+      <!-- Bagian Kiri -->
+      <div style="text-align: center">
+        <h3>Settingan print komputer sampling lt 1</h3>
+        <img
+          src="linuxsetting.png"
+          alt="Linux Setting 1"
+          style="width: 320px; height: auto"
+        />
+      </div>
 
-     
-     <div class="tag-input">
-          <div>
-               <table id="Table">
-                    <thead>
-                         <tr>
-                              <th>Nama</th>
-                              <th>Tanggal</th>
-                              <th>kd Booking</th>
-                         </tr>
-                    </thead>
-                    <tbody>
-     
-                    </tbody>
-               </table>
-          </div>
-          <div>
-               <input type="text" id="realtime-input" placeholder="Paste disini.." autocomplete="off">
-               <button class="button info" type="button"id="nextButton">next</button>
-               <button class="button" type="button"id="printButton">Print</button>
-          </div>
+      <!-- Bagian Kanan -->
+      <div style="text-align: center">
+        <h3>Settingan lain</h3>
+        <span style="color: #c0c0c0">comming soon</span>
+        <!-- <img
+          src="linuxsetting.png"
+          alt="Linux Setting 2"
+          style="width: 320px; height: auto"
+        /> -->
+      </div>
+    </section>
 
-     </div>
-     
-<script>
-     //FO-23100001TA/Ny ELSJE MAAR IGIR
-     const inputElement = document.getElementById("realtime-input");
-     const listContainer = document.getElementById('list');
-     const tbody = document.querySelector('#Table tbody');
-     const name = document.getElementById('name');
-     const cleanData = [];
-     let array = [];
-     let printLoop = 0;
-     inputElement.addEventListener("input", function() {
-          let inputValue = inputElement.value;
-          /**  
-           * karakter spesial tidak bisa di hilangkan karena masing masing regex saling ketergantungan. 
-           * regex untuk menghilangkan special character akan menyeleksi smua character special tanpa terkecuali baik yang ada di nama,
-           * tanggal, dan nomor booking 
-           * sedangkan special char tsb tidak boleh di hilangkan. jika hanya hanya ingin menghilangkan special character yang ada di nama,
-           * string nya harus di pecahkan dlu menjadi array.tetapi string tidak bisa di pecah jadi array apabila di nama ada character khusus.  
-           **/
-          const rgx = /([A-Za-z]+(\s+[A-Za-z]+)+)\t([0-9]+(-[0-9]+)+)\t([A-Za-z0-9]+(-[A-Za-z0-9]+)+)\t/;
-          array = inputValue.split(rgx);
+    <div id="print">
+      <div
+        class="border"
+        style="
+          position: fixed;
+          top: 0;
+          left: 50%;
+          transform: translateX(-50%);
+          text-align: center;
+          width: 59mm;
+          height: 32mm;
+        "
+      >
+        <div
+          style="
+            width: 100%;
+            height: 100%;
+            font-family: Arial, Helvetica, sans-serif;
+          "
+        >
+          <h6
+            style="margin-top: 4px; margin-bottom: 0; padding: 0"
+            id="name"
+          ></h6>
+          <svg id="barcode"></svg>
+        </div>
+      </div>
+    </div>
 
-          // solved
-          let currentData = [...array];
-          const dataLengthPerCheck = 7;
-          // const cleanData = [];
-          while (currentData.length >= dataLengthPerCheck) {
-               const indices = [1, 3, 5];
-               const newData = [];
-               for (const index of indices) {
-                    newData.push(currentData[index]);
-               }
-               cleanData.push(newData);
-               currentData = currentData.slice(dataLengthPerCheck);
+    <div class="tag-input">
+      <div>
+        <table id="Table">
+          <thead>
+            <tr>
+              <th>Nama</th>
+              <th>Tanggal</th>
+              <th>kd Booking</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div>
+        <input
+          type="text"
+          id="realtime-input"
+          placeholder="Paste disini.."
+          autocomplete="off"
+        />
+        <button class="button info" type="button" id="nextButton">Next</button>
+        <button class="button" type="button" id="printButton">Print</button>
+      </div>
+    </div>
+
+    <script>
+      //FO-23100001TA/Ny ELSJE MAAR IGIR
+      const inputElement = document.getElementById("realtime-input");
+      const listContainer = document.getElementById("list");
+      const tbody = document.querySelector("#Table tbody");
+      const name = document.getElementById("name");
+      const cleanData = [];
+      let array = [];
+      let printLoop = 0;
+      inputElement.addEventListener("input", function () {
+        let inputValue = inputElement.value;
+        /**
+         * karakter spesial tidak bisa di hilangkan karena masing masing regex saling ketergantungan.
+         * regex untuk menghilangkan special character akan menyeleksi smua character special tanpa terkecuali baik yang ada di nama,
+         * tanggal, dan nomor booking
+         * sedangkan special char tsb tidak boleh di hilangkan. jika hanya hanya ingin menghilangkan special character yang ada di nama,
+         * string nya harus di pecahkan dlu menjadi array.tetapi string tidak bisa di pecah jadi array apabila di nama ada character khusus.
+         **/
+        const rgx =
+          /([A-Za-z]+(\s+[A-Za-z]+)+)\t([0-9]+(-[0-9]+)+)\t([A-Za-z0-9]+(-[A-Za-z0-9]+)+)\t/;
+        array = inputValue.split(rgx);
+
+        // solved
+        let currentData = [...array];
+        const dataLengthPerCheck = 7;
+        // const cleanData = [];
+        while (currentData.length >= dataLengthPerCheck) {
+          const indices = [1, 3, 5];
+          const newData = [];
+          for (const index of indices) {
+            newData.push(currentData[index]);
           }
-          // end of solved
+          cleanData.push(newData);
+          currentData = currentData.slice(dataLengthPerCheck);
+        }
+        // end of solved
 
-          cleanData.forEach(function(dt,i) {
-               let row = tbody.insertRow();
-               row.id = i;
-               let cellNama = row.insertCell(0);
-               let tgl = row.insertCell(1);
-               let booking = row.insertCell(2);
+        cleanData.forEach(function (dt, i) {
+          let row = tbody.insertRow();
+          row.id = i;
+          let cellNama = row.insertCell(0);
+          let tgl = row.insertCell(1);
+          let booking = row.insertCell(2);
 
-               cellNama.textContent = dt[0];
-               tgl.textContent = dt[1];
-               booking.textContent = dt[2];
+          cellNama.textContent = dt[0];
+          tgl.textContent = dt[1];
+          booking.textContent = dt[2];
+        });
+        inputElement.disabled = true;
+      });
+
+      function printPage() {
+        console.log(cleanData);
+        let printWindow = window.open("", "_blank");
+        // Mengatur ukuran kertas (A4 adalah contoh)
+        printWindow.document.body.style.width = "59mm";
+        printWindow.document.body.style.height = "32mm";
+        printWindow.document.write(document.getElementById("print").innerHTML);
+        // Mengirim perintah cetak ke printer
+        printWindow.print();
+        // Menutup jendela cetakan setelah selesai
+        printWindow.close();
+      }
+      const nextButton = document.getElementById("nextButton");
+      nextButton.addEventListener("click", function () {
+        try {
+          const tr = document.getElementById(printLoop);
+          tr.classList.add("dicoret");
+          const printRaw = cleanData[printLoop];
+          JsBarcode("#barcode", printRaw[2], {
+            width: 1,
+            height: 35,
+            fontSize: 14,
           });
-          inputElement.disabled =true;
+          name.textContent = printRaw[0];
+          console.log(printLoop++);
+        } catch (error) {
+          alert("Data Sudah Habis, masukan ulang data yang lain !");
+          location.reload();
+        }
+      });
 
-          
-     });
-
-     function printPage() {
-          console.log(cleanData);
-          let printWindow = window.open('', '_blank');
-          // Mengatur ukuran kertas (A4 adalah contoh)
-          printWindow.document.body.style.width = '59mm';
-          printWindow.document.body.style.height = '32mm';
-          printWindow.document.write(document.getElementById('print').innerHTML);
-          // Mengirim perintah cetak ke printer
-          printWindow.print();
-          // Menutup jendela cetakan setelah selesai
-          printWindow.close();
-     }
-     const nextButton = document.getElementById('nextButton')
-     nextButton.addEventListener('click', function() {
-          try {
-               const tr = document.getElementById(printLoop)
-               tr.classList.add('dicoret');
-               const printRaw = cleanData[printLoop]
-               JsBarcode("#barcode", printRaw[2],{
-                    width: 1,height: 35,fontSize: 14
-               })
-               name.textContent = printRaw[0];
-               console.log(printLoop++);
-          } catch (error) {
-               alert("Data Sudah Habis, masukan ulang data yang lain !")
-               location.reload()
-          }
-     })
-
-     // Contoh tombol untuk memulai pencetakan
-     let printButton = document.getElementById('printButton');
-     printButton.addEventListener('click', function() {
-     printPage();
-     });
-</script>
-</body>
-
-
+      // Contoh tombol untuk memulai pencetakan
+      let printButton = document.getElementById("printButton");
+      printButton.addEventListener("click", function () {
+        printPage();
+      });
+    </script>
+  </body>
 </html>
