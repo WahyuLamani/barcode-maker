@@ -118,7 +118,7 @@
       const generateQr = async (nip) => {
         const qrElement = document.createElement("div");
         const qr = new QRCode(qrElement, {
-          text: `stf.${nip}`,
+          text: `stf${nip}`,
           width: 100,
           height: 100,
           colorDark: "#000000",
