@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <title>Employee Barcoder</title>
+  </head>
+  <style>
+    .h-screen {
+      margin-top: 45vh;
+    }
+    .bg-cyan {
+      background-color: cyan;
+    }
+  </style>
+  <body>
+    <main>
+      <div class="h-screen d-flex justify-content-center align-items-center">
+        <div>
+          <form id="employe-barcoder" class="container">
+            <div class="row d-flex justify-content-between">
+              <div class="col-12 d-flex">
+                <h5>Generate QRcode</h5>
+              </div>
+              <div class="col-8">
+                <input
+                  type="text"
+                  class="form-control w-100"
+                  id="nip"
+                  name="nip"
+                  placeholder="30.2111.1234"
+                  autocomplete="off"
+                  autofocus
+                />
+                <div id="validationServer03Feedback" class="invalid-feedback">
+                  isi NIP dengan Benar.
+                </div>
+              </div>
+
+              <div class="col-4">
+                <button
+                  type="submit"
+                  id="btn-submit"
+                  class="btn btn-md btn-primary px-3 text-wrap"
+                >
+                  Create
+                </button>
+              </div>
+              <a href="/" class="mt-3"><span>&larr;</span> Kembali</a>
+            </div>
+          </form>
+        </div>
+      </div>
+      <!-- Modal -->
+      <div
+        class="modal fade"
+        id="modalprint"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        tabindex="-1"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="btn-close" id="exit-modal"></button>
+            </div>
+            <div class="modal-body" id="qrmodal"></div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                onclick="(printQR())"
+                class="btn btn-success"
+              >
+                Print
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <script>
+      const formBarcoder = document.getElementById("employe-barcoder");
+      const modalBody = document.getElementById("qrmodal");
+      const Nip = document.getElementById("nip");
+      const exitModal = document.getElementById("exit-modal");
+      const modalTriger = new bootstrap.Modal(
+        document.getElementById("modalprint")
+      );
+      formBarcoder.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const formData = new FormData(formBarcoder);
+        const nip = formData.get("nip");
+        if (nip.length < 12 || nip.length > 12) {
+          Nip.classList.add("is-invalid");
+        } else {
+          const qrElement = await generateQr(nip);
+          await modalBody.appendChild(qrElement);
+          Nip.classList.remove("is-invalid");
+          modalTriger.show();
+        }
+      });
+
+      exitModal.addEventListener("click", (e) => {
+        modalBody.innerHTML = "";
+        modalTriger.hide();
+      });
+
+      const generateQr = async (nip) => {
+        const qrElement = document.createElement("div");
+        const qr = new QRCode(qrElement, {
+          text: `stf.${nip}`,
+          width: 100,
+          height: 100,
+          colorDark: "#000000",
+          colorLight: "#ffffff",
+          correctLevel: QRCode.CorrectLevel.H,
+        });
+        return qrElement;
+      };
+
+      const printQR = () => {
+        let printWindow = window.open("", "_blank");
+        // Mengatur ukuran kertas (A4 adalah contoh)
+        printWindow.document.body.style.width = "59mm";
+        printWindow.document.body.style.height = "32mm";
+        printWindow.document.write(modalBody.innerHTML);
+        // Mengirim perintah cetak ke printer
+        printWindow.print();
+        // Menutup jendela cetakan setelah selesai
+        printWindow.close();
+      };
+    </script>
+  </body>
+</html>
