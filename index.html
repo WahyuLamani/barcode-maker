@@ -105,36 +105,6 @@
     }
   </style>
   <body>
-    <section
-      style="
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 20px;
-      "
-    >
-      <!-- Bagian Kiri -->
-      <div style="text-align: center">
-        <h3>Settingan print komputer sampling lt 1</h3>
-        <img
-          src="linuxsetting.png"
-          alt="Linux Setting 1"
-          style="width: 320px; height: auto"
-        />
-      </div>
-
-      <!-- Bagian Kanan -->
-      <div style="text-align: center">
-        <h3>Settingan lain</h3>
-        <span style="color: #c0c0c0">comming soon</span>
-        <!-- <img
-          src="linuxsetting.png"
-          alt="Linux Setting 2"
-          style="width: 320px; height: auto"
-        /> -->
-      </div>
-    </section>
-
     <div id="print">
       <div
         class="border"
@@ -277,8 +247,55 @@
       // Contoh tombol untuk memulai pencetakan
       let printButton = document.getElementById("printButton");
       printButton.addEventListener("click", function () {
-        printPage();
+        // lama
+        // printPage();
+
+        const printRaw = cleanData[printLoop - 1]; // data terakhir yg dipilih
+        const nama = printRaw[0];
+        const barcode = printRaw[2];
+
+        // const zpl = `
+        //   ^XA
+        //   ^FO50,50^A0N,30,30^FD${nama}^FS
+        //   ^FO50,100^BY2
+        //   ^BCN,100,Y,N,N
+        //   ^FD${barcode}^FS
+        //   ^XZ`;
+        const zpl = generateZPL(nama, barcode);
+        console.log(zpl);
+        sendToPrinter(zpl);
       });
+
+      function generateZPL(namaPasien, kodeBooking) {
+        return `
+          ^XA
+          ^PW460
+          ^LL250
+          ^FO20,20^A0N,30,30^FD${namaPasien}^FS
+          ^FO20,70^BY2
+          ^BCN,100,Y,N,N
+          ^FD${kodeBooking}^FS
+          ^XZ`;
+      }
+
+      const socket = new WebSocket("ws://localhost:6025");
+
+      socket.onopen = () => console.log("WebSocket connected");
+      socket.onerror = (e) => console.error("WebSocket error", e);
+      socket.onmessage = (msg) => console.log("Printer reply", msg.data);
+
+      function sendToPrinter(zplData) {
+        if (socket.readyState === WebSocket.OPEN) {
+          const data = {
+            printer: "zebra",
+            type: "zpl",
+            data: zplData,
+          };
+          socket.send(JSON.stringify(data));
+        } else {
+          alert("Printer belum terhubung");
+        }
+      }
     </script>
   </body>
 </html>
